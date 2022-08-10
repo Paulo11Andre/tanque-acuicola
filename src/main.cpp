@@ -1,3 +1,7 @@
+/*
+Proyecto realizado por José Sánchez y Paulo Valarezo.
+*/
+
 #include <Arduino.h>
 #include <WiFi.h>
 #include <LiquidCrystal_I2C.h>
