@@ -8,8 +8,8 @@ Proyecto realizado por José Sánchez y Paulo Valarezo.
 
 
 // Datos de la red wifi a conectar
-#define WIFI_SSID "NETLIFE-CANO"
-#define WIFI_PASSWORD "Nuria260470@"
+#define WIFI_SSID "xxxx"
+#define WIFI_PASSWORD "xxxx"
 
 // Pines de led: conexión wifi
 #define PIN_RED 27 // GIOP27
