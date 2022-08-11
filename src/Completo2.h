@@ -1,17 +1,24 @@
 /*
+// Proyecto realizado por José Sánchez y Paulo Valarezo.
+
 #include <Arduino.h>
 #include <WiFi.h>
 #include <LiquidCrystal_I2C.h>
 
 
 // Datos de la red wifi a conectar
-#define WIFI_SSID "NETLIFE-CANO"
-#define WIFI_PASSWORD "Nuria260470@"
+#define WIFI_SSID "xx"
+#define WIFI_PASSWORD "xx"
 
 // Pines de led: conexión wifi
 #define PIN_RED 27 // GIOP27
-#define PIN_GREEN 25 // GIOP25
-#define PIN_BLUE 26 // GIOP26
+#define PIN_GREEN 26 // GIOP26
+#define PIN_BLUE 25 // GIOP25
+
+// Pines de led: funcionamiento adecuado
+#define PIN_RED2 14 // GIOP14
+#define PIN_GREEN2 12 // GIOP12
+#define PIN_BLUE2 15 // GIOP15
 
 // Pines LM35
 #define ADC_VREF_mV 3300.0 // in millivolt
@@ -39,24 +46,36 @@ void setup() {
 }
 
 bool isConnected = false;
+bool tempCorrecta = false;
+bool oxiCorrecto = false;
+int tiempoDeEspera = 10;
 
 void loop() {
-  if (WiFi.status() == WL_CONNECTED && !isConnected) {   // Entra si se realizó una conexión exitosa
-    analogWrite(PIN_RED, 0);
-    analogWrite(PIN_GREEN, 255); // LED verde si hay conexión wifi
-    analogWrite(PIN_BLUE, 0);
+  if (WiFi.status() == WL_CONNECTED && !isConnected && tiempoDeEspera>0) {   // Entra si se realizó una conexión exitosa
+    analogWrite(PIN_RED, 255);
+    analogWrite(PIN_GREEN, 0); // LED verde si hay conexión wifi
+    analogWrite(PIN_BLUE, 255);
     Serial.println("Conectado");
     delay(1000);
     isConnected = true;
   }
 
-  if (WiFi.status() != WL_CONNECTED) {   // Imprimirá puntos hasta que se realice una conexión WiFi
-    analogWrite(PIN_RED, 0);
-    analogWrite(PIN_GREEN, 0);
-    analogWrite(PIN_BLUE, 255); // LED azul si se está conectando
+  if (WiFi.status() != WL_CONNECTED && tiempoDeEspera>0) {   // Imprimirá puntos hasta que se realice una conexión WiFi
+    analogWrite(PIN_RED, 255);
+    analogWrite(PIN_GREEN, 255);
+    analogWrite(PIN_BLUE, 0); // LED azul si se está conectando
     Serial.println(".");
     delay(1000);
     isConnected = false;
+    tiempoDeEspera -=1;
+  }
+
+  if (tiempoDeEspera == 0 && isConnected == false){
+    analogWrite(PIN_RED, 0); // LED rojo si no hay wifi
+    analogWrite(PIN_GREEN, 255);
+    analogWrite(PIN_BLUE, 255);
+    Serial.println("No hay conexión wifi");
+    isConnected = true;
   }
 
   // read the ADC value from the temperature sensor
@@ -76,13 +95,12 @@ void loop() {
   Serial.print(tempF);   // print the temperature in °F
   Serial.println("°F");
 
+  lcd0.clear();
   lcd0.setCursor(0,0);
   lcd0.print("Temperatura:");
   lcd0.setCursor(5,1);
-  lcd0.print(String(tempC) + "C");
-  delay(1500);
-  lcd0.clear();
-
+  lcd0.print(String(tempC) + " C");
+  delay(1000);
   
 }
 */

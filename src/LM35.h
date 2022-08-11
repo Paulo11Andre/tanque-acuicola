@@ -1,5 +1,4 @@
 
-
 /*
  * This ESP32 code is created by esp32io.com
  *
@@ -10,6 +9,8 @@
 
 /*
 #include <Arduino.h>
+#include <WiFi.h>
+#include <LiquidCrystal_I2C.h>
 
 #define ADC_VREF_mV    3300.0 // in millivolt
 #define ADC_RESOLUTION 4096.0
