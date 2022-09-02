@@ -7,8 +7,8 @@
 #include "ThingSpeak.h"
 
 // Datos de la red wifi a conectar
-#define WIFI_SSID "NETLIFE-CANO"
-#define WIFI_PASSWORD "Nuria260470@"
+#define WIFI_SSID "TanqueAcuicola"
+#define WIFI_PASSWORD "Hola12345"
 
 // Datos en ThingSpeak
 unsigned long canal = 1;
@@ -25,17 +25,17 @@ WiFiClient  client;
 #define PIN_GREEN2 12 // GIOP12
 #define PIN_BLUE2 15 // GIOP15
 
-// Pies de funcionamiento
+// Pines de funcionamiento
 #define calentador 18 // GIOP18
 #define motor 21 //GIOP21
 
 // Pines LM35
-#define ADC_VREF_mV 5000.0 // in millivolt
+#define ADC_VREF_mV 5000.0 // en mV
 #define ADC_RESOLUTION 4096.0
-#define PIN_LM35 36 // GIOP36 (ADC0) connected to LM35 
-#define PIN_LM352 39 // GIOP39 (ADC1) connected to LM35 
+#define PIN_LM35 36 // GIOP36 (ADC0) 
+#define PIN_LM352 39 // GIOP39 (ADC1) 
 
-LiquidCrystal_I2C lcd0(0x27, 16, 2); // I2C dirección 0x27, 16 column and 2 rows
+LiquidCrystal_I2C lcd0(0x27, 16, 2); // I2C dirección 0x27, 16 columnas y 2 filas
 
 void setup() {
   pinMode(PIN_RED, OUTPUT);
@@ -53,10 +53,10 @@ void setup() {
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD); // Inicializador de la conexión wifi
   Serial.println("\nComenzando conexión");
 
-  WiFi.mode(WIFI_STA);   // Set the ESP32 as a Wi-Fi station
-  ThingSpeak.begin(client);  // Initialize ThingSpeak
+  WiFi.mode(WIFI_STA);   // Configura el ESP32 como una estación Wi-Fi
+  ThingSpeak.begin(client);  // Inicializador de ThingSpeak
 
-  lcd0.init(); // Inicializador del lcd
+  lcd0.init(); // Inicializador del LCD
   lcd0.backlight();
   lcd0.setCursor(0, 0);      // move cursor to   (0, 0)
   lcd0.print("Tanque Acuícola");       // print message at (0, 0)
@@ -69,7 +69,7 @@ bool tempCorrecta = false;
 bool oxiCorrecto = false;
 int tiempoDeEspera = 10;
 int tiempoDeSubida = 15;
-int tempMin = 15;
+int tempMin = 21;
 int tempMax = 25;
 int nivelOx = 50;
 
@@ -101,15 +101,13 @@ void loop() {
     isConnected = true;
   }
 
-  int adcVal = analogRead(PIN_LM35); // read the ADC value from the temperature sensor
-  float milliVolt = adcVal * (ADC_VREF_mV / ADC_RESOLUTION); // convert the ADC value to voltage in millivolt
-  float tempC = milliVolt / 10; // convert the voltage to the temperature in °C
-  float tempF = tempC * 9 / 5 + 32; // convert the °C to °F
+  int adcVal = analogRead(PIN_LM35); // lee el valor ADC del sensor de temperatura
+  float milliVolt = adcVal * (ADC_VREF_mV / ADC_RESOLUTION); // convierte el valor ADC a mV
+  float tempC = milliVolt / 10; // convierte el voltaje a temperatura en °C
 
-  int adcVal2 = analogRead(PIN_LM352); // read the ADC value from the temperature sensor
-  float milliVolt2 = adcVal2 * (ADC_VREF_mV / ADC_RESOLUTION); // convert the ADC value to voltage in millivolt
-  float tempC2 = milliVolt2 / 10; // convert the voltage to the temperature in °C
-  float tempF2 = tempC2 * 9 / 5 + 32; // convert the °C to °F
+  int adcVal2 = analogRead(PIN_LM352); // lee el valor ADC del sensor de temperatura
+  float milliVolt2 = adcVal2 * (ADC_VREF_mV / ADC_RESOLUTION); // convierte el valor ADC a mV
+  float tempC2 = milliVolt2 / 10; // convierte el voltaje a temperatura en °C
 
   float tempCPro = (tempC + tempC2)/2; //Promedio de temperaturas
 
@@ -139,20 +137,12 @@ void loop() {
     digitalWrite(motor, LOW);
   }
 
-  // Print the temperature in the Serial Monitor:
-  // Serial.print("Temperatura: ");
-  // Serial.print(tempC);   // print the temperature in °C
-  // Serial.print("°C");
-  // Serial.print("  ~  "); // separator between °C and °F
-  // Serial.print(tempF);   // print the temperature in °F
-  // Serial.println("°F");
-
   // Escritura en el LCD
   lcd0.clear();
   lcd0.setCursor(0,0);
   lcd0.print("Temperatura:");
   lcd0.setCursor(5,1);
-  lcd0.print(String(tempC) + " C");
+  lcd0.print(String(tempCPro) + " C");
 
   // Subida de datos a ThingSpeak
   if(WiFi.status() == WL_CONNECTED && tiempoDeSubida==0){
